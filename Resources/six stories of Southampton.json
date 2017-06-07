@@ -1,0 +1,466 @@
+{
+		"author": "Megan Humphrey",
+		"description": "<p>The goddess Ancasta has watched over the city of Southampton for thousands of years. She’s seen the city change and grow, and collected the stories of its people. From the Hundred Years War, to the sinking of the Titanic, to the modern era of cruise ships and ocean liners, she’s seen all that Southampton has been. Now, as you walk the streets of the city, you can discover some of the stories she has to tell, and discover a new way of looking at Southampton.</p><p>Story &copy; 2016 Megan Humphrey, All Rights Reserved.<br/><br/>Editors Charlie Hargood and Verity Hunt<br/><br/></p>",
+		"name": "Six Stories Of Southampton",
+		"publishState": "published",
+		"audience": "general",
+		"schemaVersion": "https://storyplaces.soton.ac.uk/schema/02",
+		"pagesMapViewSettings": {
+			"map": true,
+			"pageArrows": true,
+			"pageDistance": true
+		},
+		"tags": [
+			"Southampton"
+		],
+		"cachedMediaIds": [],
+		"functions": [
+			{
+				"type": "increment",
+				"variable": "storyCount",
+				"value": "1",
+				"id": "storyCount",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "end",
+				"value": "true",
+				"id": "end",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenAncasta",
+				"value": "true",
+				"id": "seenAncasta",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenOperation",
+				"value": "true",
+				"id": "seenOperation",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenPlot",
+				"value": "true",
+				"id": "seenPlot",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenWaiting",
+				"value": "true",
+				"id": "seenWaiting",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenNearer",
+				"value": "true",
+				"id": "seenNearer",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenGateway",
+				"value": "true",
+				"id": "seenGateway",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenSeas",
+				"value": "true",
+				"id": "seenSeas",
+				"conditions": [],
+				"functions": []
+			},
+			{
+				"type": "set",
+				"variable": "seenSouthampton",
+				"value": "true",
+				"id": "seenSouthampton",
+				"conditions": [],
+				"functions": []
+			}
+		],
+		"conditions": [
+			{
+				"bool": "true",
+				"type": "location",
+				"location": "822583e8072c4f66655ab49b",
+				"id": "holyrood"
+			},
+			{
+				"bool": "true",
+				"type": "location",
+				"location": "53dca9ee617b5965064e6833",
+				"id": "bargate"
+			},
+			{
+				"bool": "true",
+				"type": "location",
+				"location": "6b3251d7db159be5dbfb637a",
+				"id": "stmichaels"
+			},
+			{
+				"bool": "true",
+				"type": "location",
+				"location": "b97e8521dc16ccee9580ad1d",
+				"id": "memorial"
+			},
+			{
+				"bool": "true",
+				"type": "location",
+				"location": "b53ec06f925d766c2415d510",
+				"id": "mayflower"
+			},
+			{
+				"bool": "true",
+				"type": "location",
+				"location": "ab349646e7cc91ef38aa59cd",
+				"id": "ikea"
+			},
+			{
+				"bType": "String",
+				"b": "6",
+				"aType": "Variable",
+				"a": "storyCount",
+				"operand": "==",
+				"type": "comparison",
+				"id": "storyCount"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "end",
+				"operand": "==",
+				"type": "comparison",
+				"id": "end"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenAncasta",
+				"operand": "==",
+				"type": "comparison",
+				"id": "seenIntro"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenAncasta",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenAncasta"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenOperation",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenOperation"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenPlot",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenPlot"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenWaiting",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenWaiting"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenNearer",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenNearer"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenGateway",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenGateway"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenSeas",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenSeas"
+			},
+			{
+				"bType": "String",
+				"b": "true",
+				"aType": "Variable",
+				"a": "seenSouthampton",
+				"operand": "!=",
+				"type": "comparison",
+				"id": "seenSouthampton"
+			}
+		],
+		"locations": [
+			{
+				"id": "822583e8072c4f66655ab49b",
+				"type": "circle",
+				"radius": 40,
+				"lon": -1.403664,
+				"lat": 50.89967
+			},
+			{
+				"id": "53dca9ee617b5965064e6833",
+				"type": "circle",
+				"radius": 40,
+				"lon": -1.404179,
+				"lat": 50.902688
+			},
+			{
+				"id": "6b3251d7db159be5dbfb637a",
+				"type": "circle",
+				"radius": 40,
+				"lon": -1.405402,
+				"lat": 50.899563
+			},
+			{
+				"id": "b97e8521dc16ccee9580ad1d",
+				"type": "circle",
+				"radius": 40,
+				"lon": -1.405019,
+				"lat": 50.910578
+			},
+			{
+				"id": "b53ec06f925d766c2415d510",
+				"type": "circle",
+				"radius": 60,
+				"lon": -1.407312,
+				"lat": 50.897369
+			},
+			{
+				"id": "ab349646e7cc91ef38aa59cd",
+				"type": "circle",
+				"radius": 70,
+				"lon": -1.411153,
+				"lat": 50.902705
+			},
+			{
+				"id": "e12ea776998b31b723712453",
+				"lon": -1.394094,
+				"lat": 50.896933,
+				"type": "circle",
+				"radius": 0
+			}
+		],
+		"pages": [
+			{
+				"content": "This is an old city, perched at the entrance of the small island that lies between Europe and the vast Atlantic. It’s been here for thousands of years, since your ancestors first began to chip flint into blades. I’ve been here since the birth of the land and I watched the people live and die. It was the Romans who first named me, Ancasta, the goddess of the river. I watched over Clausentum, their port, and when the Romans left, I remained. I saw the Saxon town of Hamwic become Hampton, which became the very Southampton you see today. All those years of history, and so many stories. War ships and merchant ships, sailors and traders and lovers, monks and kings and traitors, pilgrims and students and soldiers and tourists. The city has been ransacked and rebuilt, bombed and born again. You see the concrete towers and grey skies of any other city, but when I look at Southampton, I see history. <br/><br/>So here’s a challenge for you, dear reader, to look at my city with new eyes. Walk out into Southampton and when you see the old walls and the new shopping centres, I’ll tell you stories about what I’ve seen. Six stories, in fact, and when you’ve read them all, I hope you’ll understand why I’ve been here for all these thousands of years, and why I’ll be staying. <br/><br/>Go on, then. Go out and find some stories.",
+				"hint": {
+					"direction": "",
+					"locations": []
+				},
+				"id": "576a84507d7a141c6e0000bb",
+				"name": "Ancasta",
+				"pageTransition": "next",
+				"functions": [
+					"seenAncasta"
+				],
+				"conditions": [
+					"seenAncasta"
+				]
+			},
+			{
+				"content": "Southampton is bustling with soldiers. Of course, there is a war on, and this is a key port city, so there have been soldiers around for the last few years. But this is wholly different – the Solent is crammed with boats, all waiting for something, and soldiers are marching down The Avenue and camping out on the Common.<br/><br/>Tommy is fourteen, and too young to enlist, no matter how much he wants to. His big brother Albert has been out on the Front for a year now, ever since he turned sixteen and signed up, and Tommy watches the troops and imagines going out to join Albert. <br/><br/>The city itself is a shell of what it once was, bombed and burnt until the centre is a mass of rubble and devastation. The American soldiers have taken over the hospital at Netley, and the whole city is in a state of anticipation. Tommy watches the soldiers and dreams of joining them, sailing off to whatever mysterious place they’re preparing to visit. There’s a lot of debate, hushed discussions of where this army might be headed. Even the soldiers who flirt with his big sister in the streets don’t know where they’re going, but they don’t seem to mind. “The war will be over soon,” they say, and wink at Tommy.<br/><br/>Then, one morning, Tommy wakes and walks down to the docks to look at the gathered ships, and sees only the sea. They’ve all gone, only a few lonely rowing boats left bobbing in the waves. Tommy grins, and wishes them well.",
+				"hint": {
+					"direction": "Holyrood Church on the High Street",
+					"locations": [
+						"822583e8072c4f66655ab49b"
+					]
+				},
+				"id": "576a84507d7a141c6e0000ba",
+				"name": "Operation Overlord",
+				"pageTransition": "next",
+				"functions": [
+					"seenOperation",
+					"storyCount"
+				],
+				"conditions": [
+					"seenIntro",
+					"seenOperation",
+					"holyrood"
+				]
+			},
+			{
+				"content": "It’s August 1415, and the fields around Southampton are filled with soldiers waiting to sail across the English Channel to Agincourt. Crowds are gathered around the grey stones of the Bargate – the same stones you see today. They’re gathered to witness the execution of a traitor. <br/><br/>There’s been a plot, you see, a plot to remove the King from power and replace him. There are three men in particular who have been convicted of this most awful of crimes: Richard, Earl of Cambridge; Henry, Lord Scrope of Masham; and Sir Thomas Gray, who has already been executed three days previously. Earl Richard is the King’s cousin, and has confessed his guilt in a desperate plea for mercy, whilst Lord Scrope has demanded a trial of his peers. As a result, the nobility of England is crowding Southampton, to sit in judgement of two of their fellow nobles. <br/><br/>They’ve been damned already, because King Henry is not willing to let such a heinous plot be forgiven. Their co-conspirator, Thomas Gray, gave a lengthy confession before his death that implicated them both, and the guilty verdict was a foregone conclusion. Now the people of Southampton wait around the Bargate to see the King’s justice prevail.<br/><br/>Richard, Earl of Cambridge, is the first to die, beheaded and given a quick death, the only mercy the King would grant him. Scrope is not so lucky. He’s dragged from the Watergate of Southampton castle all the way to the Bargate. It’s over quickly, though, and the people wander away. Less than a week later, the army sails for France, and Agincourt. ",
+				"hint": {
+					"direction": "Head to the Bargate",
+					"locations": [
+						"53dca9ee617b5965064e6833"
+					]
+				},
+				"id": "576a84507d7a141c6e0000b9",
+				"name": "The Southampton Plot",
+				"pageTransition": "next",
+				"functions": [
+					"seenPlot",
+					"storyCount"
+				],
+				"conditions": [
+					"seenIntro",
+					"seenPlot",
+					"bargate"
+				]
+			},
+			{
+				"content": "Rain falls in sheets across the city, and as the church door creaks open, a flash of lightning splits the sky. Clara is not the first to retreat to the church – many of her friends are here, too, all of them wives of sailors who are out tonight on the seas, gone on another voyage that afternoon. Clara shuffles along the aisle and sits down on a wooden pew, close to the altar but not too close, and bows her head. She can see the shining blonde hair of Jane Eliot two rows ahead. Jane’s newly married, so this is the first time she’s faced the true terror of the sea. <br/><br/>Clara herself has been married to Joe for five years now, and seen him off on many a voyage. The fear never really goes away, she knows now, but you become accustomed to it. Joe himself loves the sea, and long ago accepted his probable death in salty waters with equanimity. Clara cannot be quite so calm about it, not with three children already at home and another on the way.<br/><br/>She hears a muffled sob, and raises her head to see Jane Eliot dabbing at her eyes with a handkerchief. She feels a pang of sympathy and slips out of the pew, moving in beside Jane and offering a hand in wordless comfort. Jane clutches at it gratefully, and the two women kneel and begin to pray. Hail Mary, full of grace…",
+				"hint": {
+					"direction": "St Michaels Church on Bugel Street",
+					"locations": [
+						"6b3251d7db159be5dbfb637a"
+					]
+				},
+				"id": "576a84507d7a141c6e0000b8",
+				"name": "Waiting",
+				"pageTransition": "next",
+				"functions": [
+					"seenWaiting",
+					"storyCount"
+				],
+				"conditions": [
+					"seenIntro",
+					"seenWaiting",
+					"stmichaels"
+				]
+			},
+			{
+				"content": "You’ve heard this story before, most likely, but not how I tell it. They sailed from Southampton port, after all, that unsinkable ship and all her many passengers, and the talented crew of musicians set to entertain them. I know all their stories.<br/><br/>The Bandmaster, Wallace Hartley, was accompanied by Theodore Brailey, Roger Bricoux, George Krins, P.C. Taylor and J.W. Woodward. Jock Hume, the second violinist, was soon to be married. Fred Clark, the bass-viol player, had never been to sea before.<br/><br/>As they left Southampton on 10 April 1912 to the cheers of the excited crowd, this little orchestra played an air from a popular musical. Only four days later, early in the morning of the 14 April, in the middle of the Atlantic, they began to play their final hymn as their unsinkable ship collapsed around them.<br/><br/>Why? What made these men relinquish their chance of survival – some bizarre dedication to art, perhaps? Were they following orders? Did they just not know what else to do? <br/><br/>They played for all those reasons, and more. They played because they believed it was their duty, and they played to comfort themselves, and all those lost souls dying in the water. Wallace Hartley’s favourite hymn, reaching out to the passengers across the waves.<br/><br/>Imagine: out in the cold waters of the Atlantic, the melancholy strains of a violin.",
+				"hint": {
+					"direction": "Titanic Musicians Memorial - on the side of Paris Smith solicitors' offices on the corner of Cumberland Place and London Road",
+					"locations": [
+						"b97e8521dc16ccee9580ad1d"
+					]
+				},
+				"id": "576a84507d7a141c6e0000b7",
+				"name": "Nearer, my God, to Thee",
+				"pageTransition": "next",
+				"functions": [
+					"seenNearer",
+					"storyCount"
+				],
+				"conditions": [
+					"seenIntro",
+					"seenNearer",
+					"memorial"
+				]
+			},
+			{
+				"content": "This is the perfect place to look out across the Solent. It’s that body of water that Maria came across three years ago, 15 years old and seeing English shores for the first time, pale and seasick after the long journey from India. Now, she’s supposed to be going back.<br/><br/>The docks are full of life and pungent with spices and fish and tar and other, less pleasant smells. The tall masts of ships blot out the blue summer sky, and the gulls swerve and dive around them, crying out in their piercing voices. A sailor barges past her, heavily tattooed and stained with oil and grease. Maria clutches her hat as the sea breeze tugs at it, and steps back, wide-eyed. All she has is one small bag.<br/><br/>She’s waiting for the chaperone her father promised he would send, to guide her and look after her during the journey. Maria is eighteen and doesn’t believe she really needs a chaperone, but the other girls at the school were full of horrific stories of young women being kidnapped by sailors and led astray, so Maria had conceded. Never mind that the way the girls told those stories made them sound rather thrilling. <br/><br/>She’s been here for an hour already. There’s no sign of the chaperone, and the ship has already departed, but she doesn’t know what else to do but wait. And then she realises: she can go anywhere. Out across the horizon, the wide world opens its arms.",
+				"hint": {
+					"direction": "Mayflower Park",
+					"locations": [
+						"b53ec06f925d766c2415d510"
+					]
+				},
+				"id": "576a84507d7a141c6e0000b6",
+				"name": "The Gateway to the Empire",
+				"pageTransition": "next",
+				"functions": [
+					"seenGateway",
+					"storyCount"
+				],
+				"conditions": [
+					"seenIntro",
+					"seenGateway",
+					"mayflower"
+				]
+			},
+			{
+				"content": "The sky is grey and overcast, but to Gina, standing in the sea breeze on the top of a local carpark, it’s a welcome change from the searing heat of the Canary Islands. She’s used to warm weather, of course, growing up in a small Italian sea village, but the cool English summers make a nice change. Most of her fellow staff don’t share her opinion, but Gina doesn’t care.<br/><br/>She’s a waitress on the enormous ship now currently in port, the one she’s looking at now from the carpark. From here she can pick out little details on the deck: the swimming pool, the climbing wall, deckchairs scattered about. The last lot of passengers have disembarked and new ones will be arriving in a few hours, and Gina will be back off to the Mediterranean.<br/><br/>It’s hard work, and she relies far more than she would like on the kindness of the passengers and their tips. She sends as much as she can home to her family, to supplement the money her brothers bring in from their fishing business. Her family have always worked on the sea, and now Gina does too, although in a different way. She’s travelled farther and longer than anyone else from her village, been to the Caribbean and the Baltic, seen geysers in Iceland and the ruins of Ephesus. But over time, she’s come to associate Southampton with home, because it’s where her ship will always return.",
+				"hint": {
+					"direction": "At the top of Ikea Car Park",
+					"locations": [
+						"ab349646e7cc91ef38aa59cd"
+					]
+				},
+				"id": "576a84507d7a141c6e0000b5",
+				"name": "Of the Seas",
+				"pageTransition": "next",
+				"functions": [
+					"seenSeas",
+					"storyCount"
+				],
+				"conditions": [
+					"seenIntro",
+					"seenSeas",
+					"ikea"
+				]
+			},
+			{
+				"content": "This is my city, the city that’s launched a thousand ships and welcomed a thousand more. Sailors and soldiers, fishermen, rogues and travellers. All their stories run through the water, along with so many more. They lived here, some of them, and some of them died here, whilst others just passed through, or never came back.<br/><br/>The sea is always shifting and changing, but it never forgets, and nor do I, though most of the people of Southampton have long since forgotten me. They keep a fragment of my Roman altar in the museum, but nobody knows who I am – or so they say.<br/><br/>In truth, they all know me, because I am Southampton, the spirit of the city as well as the river. I live in the streets and the roads and the houses, and I linger in the grass of the parks, and I soar with the gulls on the ocean breeze. I see everyone, and I remember everyone, and I tell their stories. When you are gone, I’ll tell yours, too",
+				"hint": {
+					"direction": "",
+					"locations": []
+				},
+				"id": "576a84507d7a141c6e0000b4",
+				"name": "Southampton",
+				"pageTransition": "next",
+				"functions": [
+					"seenSouthampton",
+					"end"
+				],
+				"conditions": [
+					"storyCount",
+					"seenSouthampton"
+				]
+			},
+			{
+				"content": "<h3>Thank you for reading one of our stories ...</h3><p>We hope you enjoyed this StoryPlaces story. We would greatly appreciate your opinions on this new approach to story telling. if you have time, filling out the short survey linked below will help us to understand how to improve our application and design new location-aware story experiences. If you would like to do another of our stories please click the StoryPlaces logo in the top left corner and select another story.</p><p><b><a href='https://www.isurvey.soton.ac.uk/20629'>Click Here to take our reader experience survey</a></b></p>",
+				"hint": {
+					"direction": "",
+					"locations": [
+						"e12ea776998b31b723712453"
+					]
+				},
+				"id": "576a84507d7a141c6e0000b3",
+				"name": "Finish",
+				"pageTransition": "end",
+				"functions": [],
+				"conditions": [
+					"end"
+				]
+			}
+		],
+		"id": "58ee3c207a94dc4cf0d4523a"
+	}
