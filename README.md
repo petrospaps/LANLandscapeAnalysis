@@ -15,3 +15,4 @@ The API doesn't need any authentication. A polygon of coordinate can be directly
 ```
 https://data.police.uk/api/crimes-street/all-crime?poly=[lat],[lng]:[lat],[lng]:[lat],[lng]
 ```
+* [List of all type of crimes](https://www.police.uk/about-this-site/faqs/#what-do-the-crime-categories-mean)
