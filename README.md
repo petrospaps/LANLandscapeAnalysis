@@ -17,5 +17,6 @@ https://data.police.uk/api/crimes-street/all-crime?poly=[lat],[lng]:[lat],[lng]:
 ```
 * [List of all type of crimes](https://www.police.uk/about-this-site/faqs/#what-do-the-crime-categories-mean)
 
-## geoSparql example
-https://en.wikipedia.org/wiki/GeoSPARQL#Example
+## SPOI
+* [data model] (http://sdi4apps.eu/spoi/doc/SPOI_data_model.pdf)
+* [geoSparql example] (https://en.wikipedia.org/wiki/GeoSPARQL#Example)
