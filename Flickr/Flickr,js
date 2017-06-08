@@ -1,9 +1,10 @@
             //Note: I need jQuery!
 
+            var apiKey = "231aa68de0dde8a67cb9d06a94649517";
+
             // Send an HTTP request to the specified URL and return the result
             function emitRequest(url) {
-                var apiKey = "231aa68de0dde8a67cb9d06a94649517";
-
+                
                 url = url.replace("$apikey$", apiKey);
 
                 return $.getJSON(url, function(data) { return(data); });
@@ -45,10 +46,7 @@
             // Get the number of views an image has had
             function getViewsForImage(photoId) {
                 
-                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
-                var url = urlTemplate.replace("$photo$", photoId);
-
-                return emitRequest(url).then(result => result.photo.views);
+                return getPropertiesForImage(photoId).then(result => result.views);
             }
 
             // Get the summary statistics for an image
@@ -83,7 +81,7 @@
                                 images.forEach(image => {
                                     var photoId = image.id;
 
-                                    var promise = getStatsForImage(photoId).then(result => results.push(results) );
+                                    var promise = getStatsForImage(photoId).then(result => results.push(result) );
                                     promises.push(promise);
                                 });
                             })
