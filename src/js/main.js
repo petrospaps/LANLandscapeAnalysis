@@ -1,16 +1,33 @@
-(function () {
+var module = (function () {
     "use strict";
 
     var file_el = null;
+    var JsonObj = null;
+     var locations = [];
 
-    // Wait until the page is loaded
+    // Wait until the page is loaded and do some checks
     window.onload = function () {
         checkFileAPISupport();
-        file_el = document.getElementById("json_file");
-        console.log(file_el);
         document.getElementById("json_file").addEventListener("change", handleFileSelect, false);
-    }
 
+        var btnParse = document.createElement('button');
+        btnParse.type = "button";
+        btnParse.textContent = "parse story locations";
+        btnParse.id = "parse_btn";
+        btnParse.addEventListener('click', getStoryLocations);
+
+        var btnEval = document.createElement('button');
+        btnEval.type = "button";
+        btnEval.textContent = "evaluate story locations";
+        btnEval.id = "eval_btn";
+        btnEval.addEventListener('click', evaluateLocation);
+
+        //document.body.appendChild(btn);
+        document.getElementById("parse_locations").appendChild(btnParse);
+        document.getElementById("evaluate_locations").appendChild(btnEval);
+    };
+
+    // Function that checks that the required file API is supported
     function checkFileAPISupport() {
 
         // Check for the various File API support.
@@ -23,8 +40,27 @@
 
     }
 
-    var JsonObj = null;
+    // Function to parse all the locations from a story
+    function getStoryLocations() {
 
+        if (JsonObj) {
+            var numOfLocations = JsonObj.locations.length;
+            for (var i = 0; i < numOfLocations; i++) {
+                locations.push(JsonObj.locations[i]);
+            }
+            console.log(locations);
+
+        } else {
+            console.log("Please upload a story");
+        }
+    }
+
+    // Function that will evaluate each point of the locations
+    function evaluateLocation() {
+
+    }
+
+    // Function that handles the json file upload
     function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
         var f = null;
@@ -39,14 +75,10 @@
                 console.log(JsonObj);
             };
         })(f);
-
-        // Read in the image file as a data URL.
         reader.readAsText(f);
     }
 
-
-    return {
-        checkFileAPISupport: checkFileAPISupport
-    };
+    // if you want to make a function available from html
+    //window.myfunction = myfunction;
 
 }());
