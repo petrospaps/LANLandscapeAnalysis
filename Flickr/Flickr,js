@@ -1,0 +1,132 @@
+            //Note: I need jQuery!
+
+            // API Key for Flickr
+            var apiKey = "231aa68de0dde8a67cb9d06a94649517";
+            // Number of years to go back when retrieving images
+            var timespanInYears = 2;
+            // Accuracy (in km) when retrieving images for a point
+            var radius = 0.02;
+            // Number of images per page to get
+            var imagePageSize = 500;
+
+            // Retrieve the earliest date we want to retrieve pictures for
+            function getStartDate() {
+                var today = new Date();
+                
+                var year = today.getFullYear() - timespanInYears;
+                var month = today.getMonth();
+                var day = today.getDate();
+
+                var startDate = new Date(year, month, day);
+
+                return startDate;
+            }
+
+            // Retrieve the latest date we want to retrieve pictures for
+            function getEndDate() {
+                
+                return new Date();
+            }
+
+            // Convert a native Date type to a MySQL/ISO format date string
+            function dateToMySqlString(inputDate) {
+                
+                var year = inputDate.getFullYear();
+                var month = inputDate.getMonth();
+                var day = inputDate.getDate();
+
+                var dateAsString = year.toString() + "-" + ((month < 10) ? "0" : "") + month.toString() + "-" + ((day < 10) ? "0" : "") + day.toString();
+
+                return dateAsString;
+            }
+
+            // Send an HTTP request to the specified URL and return the result
+            function emitRequest(url) {
+                
+                url = url.replace("$apikey$", apiKey);
+
+                return $.getJSON(url, function(data) { return(data); });
+            }
+
+            // Retrieve the set of images for the location
+            function getImagesForLocation(longitude, latitude, radius, startDate, endDate) {
+                // TODO: Cope with multiple pages of data
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=$pageSize$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate).replace("$pageSize$", imagePageSize);
+                
+                return emitRequest(url).then(result => {
+                    var numberOfPhotos = result.photos.total;
+                    var photos = result.photos.photo;
+
+                    return photos;
+                });                
+            }
+
+            // Get the number of users "favouriting" a given image
+            function getFavouriteCountForImage(photoId) {
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getFavorites&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo.total);
+            }
+
+            // Get the general properties for an image
+            function getPropertiesForImage(photoId) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo);
+            }
+
+            // Get the number of views an image has had
+            function getViewsForImage(photoId) {
+                
+                return getPropertiesForImage(photoId).then(result => result.views);
+            }
+
+            // Get the summary statistics for an image
+            function getStatsForImage(photoId) {
+                
+                var favourites;
+                var views;
+
+                return getFavouriteCountForImage(photoId)
+                    .then(result => { favourites = result; })
+                    .then(() => getViewsForImage(photoId))
+                    .then(result => { views = result; })
+                    .then(() => { 
+                        var stats = {};
+                        stats.views = views;
+                        stats.favourites = favourites;                                                
+                        return stats;
+                    });
+            }
+
+            // Retrieve the information for a location
+            function getInformationForPoint(longitude, latitude) {
+                
+                var startDate = getStartDate();
+                var startDateString = dateToMySqlString(startDate);
+                
+                var endDate = getEndDate();
+                var endDateString = dateToMySqlString(endDate);
+
+                var results = [];
+                var promises = [];
+
+                return getImagesForLocation(longitude, latitude, radius, startDateString, endDateString)
+                        .then(images => {
+                                images.forEach(image => {
+                                    var photoId = image.id;
+
+                                    var promise = getStatsForImage(photoId).then(result => results.push(result) );
+                                    promises.push(promise);
+                                });
+                            })
+                        .then(() => Promise.all(promises).then(() => results));                                  
+            }
+            
+// Example usage: getInformationForPoint(-1.403664, 50.89967).then(r => console.log("Result:", r));
