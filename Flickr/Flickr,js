@@ -1,4 +1,7 @@
-function emitRequest(url) {
+            //Note: I need jQuery!
+
+            // Send an HTTP request to the specified URL and return the result
+            function emitRequest(url) {
                 var apiKey = "231aa68de0dde8a67cb9d06a94649517";
 
                 url = url.replace("$apikey$", apiKey);
@@ -6,6 +9,7 @@ function emitRequest(url) {
                 return $.getJSON(url, function(data) { return(data); });
             }
 
+            // Retrieve the set of images for the location
             function getImagesForLocation(longitude, latitude, radius, startDate, endDate) {
                 // TODO: Cope with multiple pages of data
 
@@ -15,10 +19,12 @@ function emitRequest(url) {
                 return emitRequest(url).then(result => {
                     var numberOfPhotos = result.photos.total;
                     var photos = result.photos.photo;
+
                     return photos;
                 });                
             }
 
+            // Get the number of users "favouriting" a given image
             function getFavouriteCountForImage(photoId) {
 
                 var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getFavorites&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
@@ -27,14 +33,7 @@ function emitRequest(url) {
                 return emitRequest(url).then(result => result.photo.total);
             }
 
-            function getViewsForImage(photoId) {
-                
-                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
-                var url = urlTemplate.replace("$photo$", photoId);
-
-                return emitRequest(url).then(result => result.photo.views);
-            }
-
+            // Get the general properties for an image
             function getPropertiesForImage(photoId) {
                 
                 var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
@@ -43,6 +42,16 @@ function emitRequest(url) {
                 return emitRequest(url).then(result => result.photo);
             }
 
+            // Get the number of views an image has had
+            function getViewsForImage(photoId) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo.views);
+            }
+
+            // Get the summary statistics for an image
             function getStatsForImage(photoId) {
                 
                 var favourites;
@@ -60,6 +69,7 @@ function emitRequest(url) {
                     });
             }
 
+            // Retrieve the information for a location
             function getInformationForPoint(longitude, latitude) {
                 var radius = 0.02;
                 var startDate = "2017-01-01";
