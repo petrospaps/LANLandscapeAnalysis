@@ -1,0 +1,31 @@
+# SPOI Dataset
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX poi: <http://www.openvoc.eu/poi#>
+
+SELECT DISTINCT ?poi, ?label, ?class
+  {
+      ?poi rdfs:label ?label .
+          ?poi poi:class ?class .
+	      ?poi geo:asWKT ?location .
+	          FILTER( bif:st_within( ?location,"POLYGON((-77.03467287095656 38.91280839752332,-77.03467287095656 38.92179160247668,-77.02312712904343 38.92179160247668,-77.02312712904343 38.91280839752332,-77.03467287095656 38.91280839752332))"^^geo:wktLiteral) ) .
+		      
+		        }
+
+# LinkedGeoDAta
+
+Prefix lgdr:<http://linkedgeodata.org/triplify/> 
+Prefix lgdo:<http://linkedgeodata.org/ontology/> 
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+Prefix geom: <http://geovocab.org/geometry#>
+
+SELECT DISTINCT ?poi, ?label, ?type
+  {
+      ?poi a ?type .
+          ?poi rdfs:label ?label .
+	      ?poi geom:geometry [
+	            geo:asWKT ?location
+		        ] .
+			    FILTER( bif:st_within( ?location,"POLYGON((-77.03005457419056 38.916401679504666,-77.03005457419056 38.918198320495335,-77.02774542580943 38.918198320495335,-77.02774542580943 38.916401679504666,-77.03005457419056 38.916401679504666))"^^geo:wktLiteral) ) .
+			        
+				  }
+
