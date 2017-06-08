@@ -23,7 +23,7 @@ def square_to_wkt(square):
     return st
     
 #Holyrood church
-bbox = gen_bbox(50.8996 , -1.4037, 0.2)
+bbox = gen_bbox(50.8996 , -1.4037, 0.05)
 #Lincoln Theatre
 #bbox = gen_bbox(38.9173 , -77.0289, 0.1)
 sq = bbox_to_square(bbox)
