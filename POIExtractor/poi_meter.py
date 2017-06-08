@@ -21,7 +21,7 @@ WHERE  {
               ?poi geo:asWKT ?location .
                   FILTER( bif:st_intersects( ?location," """
     query = query + polygon
-    query = query + "\"^^geo:wktLiteral)).}" 
+    query = query + "\"^^geo:wktLiteral)).}"
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
@@ -48,7 +48,7 @@ def query_lgd(polygon):
                         ] .
                   FILTER( bif:st_intersects( ?location," """
     query = query + polygon
-    query = query + "\"^^geo:wktLiteral)).}" 
+    query = query + "\"^^geo:wktLiteral)).}"
 
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
@@ -68,8 +68,8 @@ def poi_metric(lat,lon,sqdistance):
 
 
 
-pois = poi_metric(50.8996 , -1.4037, 0.5)
-print(pois)
+#pois = poi_metric(50.8996 , -1.4037, 0.5)
+#print(pois)
 
 distance = 0.3
 lat = 50.8996
