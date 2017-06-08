@@ -1,0 +1,81 @@
+function emitRequest(url) {
+                var apiKey = "231aa68de0dde8a67cb9d06a94649517";
+
+                url = url.replace("$apikey$", apiKey);
+
+                return $.getJSON(url, function(data) { return(data); });
+            }
+
+            function getImagesForLocation(longitude, latitude, radius, startDate, endDate) {
+                // TODO: Cope with multiple pages of data
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=500&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate);                
+                
+                return emitRequest(url).then(result => {
+                    var numberOfPhotos = result.photos.total;
+                    var photos = result.photos.photo;
+                    return photos;
+                });                
+            }
+
+            function getFavouriteCountForImage(photoId) {
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getFavorites&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo.total);
+            }
+
+            function getViewsForImage(photoId) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo.views);
+            }
+
+            function getPropertiesForImage(photoId) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo);
+            }
+
+            function getStatsForImage(photoId) {
+                
+                var favourites;
+                var views;
+
+                return getFavouriteCountForImage(photoId)
+                    .then(result => { favourites = result; })
+                    .then(() => getViewsForImage(photoId))
+                    .then(result => { views = result; })
+                    .then(() => { 
+                        var stats = {};
+                        stats.views = views;
+                        stats.favourites = favourites;                                                
+                        return stats;
+                    });
+            }
+
+            function getInformationForPoint(longitude, latitude) {
+                var radius = 0.02;
+                var startDate = "2017-01-01";
+                var endDate = "2017-07-01";
+
+                var results = [];
+                var promises = [];
+
+                return getImagesForLocation(longitude, latitude, radius, startDate, endDate)                    
+                        .then(images => {
+                                images.forEach(image => {
+                                    var photoId = image.id;
+
+                                    var promise = getStatsForImage(photoId).then(result => results.push(results) );
+                                    promises.push(promise);
+                                });
+                            })
+                        .then(() => Promise.all(promises).then(() => results));                                  
+            }
