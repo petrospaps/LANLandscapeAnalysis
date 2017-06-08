@@ -1,8 +1,13 @@
             //Note: I need jQuery!
 
+            // API Key for Flickr
             var apiKey = "231aa68de0dde8a67cb9d06a94649517";
+            // Number of years to go back when retrieving images
             var timespanInYears = 2;
+            // Accuracy (in km) when retrieving images for a point
             var radius = 0.02;
+            // Number of images per page to get
+            var imagePageSize = 500;
 
             // Retrieve the earliest date we want to retrieve pictures for
             function getStartDate() {
@@ -47,8 +52,8 @@
             function getImagesForLocation(longitude, latitude, radius, startDate, endDate) {
                 // TODO: Cope with multiple pages of data
 
-                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=500&format=json&nojsoncallback=1";
-                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate);                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=$pageSize$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate).replace("$pageSize$", imagePageSize);
                 
                 return emitRequest(url).then(result => {
                     var numberOfPhotos = result.photos.total;
@@ -123,3 +128,5 @@
                             })
                         .then(() => Promise.all(promises).then(() => results));                                  
             }
+            
+// Example usage: getInformationForPoint(-1.403664, 50.89967).then(r => console.log("Result:", r));
