@@ -3,12 +3,19 @@ var module = (function () {
 
     var file_el = null;
     var JsonObj = null;
-     var locations = [];
+    var locations = [];
 
     // Wait until the page is loaded and do some checks
     window.onload = function () {
         checkFileAPISupport();
-        document.getElementById("json_file").addEventListener("change", handleFileSelect, false);
+        //document.getElementById("json_file").addEventListener("change", handleFileSelect, false);
+
+        // Make HTML elements that will be used to upload, parse, and evaluate locations
+        var fileInput = document.createElement('input');
+        fileInput.type = "file";
+        fileInput.name = "json_file_story";
+        fileInput.id = "json_file";
+        fileInput.addEventListener("change", handleFileSelect, false);
 
         var btnParse = document.createElement('button');
         btnParse.type = "button";
@@ -23,6 +30,8 @@ var module = (function () {
         btnEval.addEventListener('click', evaluateLocation);
 
         //document.body.appendChild(btn);
+        //Add the HTML elements in the selected divs
+        document.getElementById("file_input").appendChild(fileInput);
         document.getElementById("parse_locations").appendChild(btnParse);
         document.getElementById("evaluate_locations").appendChild(btnEval);
     };
@@ -58,6 +67,23 @@ var module = (function () {
     // Function that will evaluate each point of the locations
     function evaluateLocation() {
 
+        var numOfLocations = locations.length;
+
+        if (numOfLocations > 0) {
+            for (var i = 0; i < numOfLocations; i++) {
+                console.log(locations[i].lon + " " + locations[i].lat);
+            }
+            var result = "this is the text to display"
+            showResults(result);
+
+        } else {
+            console.log("Please upload a JSON file and parse the locations");
+        }
+    }
+
+    // Display the outcome of the evaluation on the screen
+    function showResults(result) {
+        document.getElementById("evaluation_output").innerHTML = result;
     }
 
     // Function that handles the json file upload
