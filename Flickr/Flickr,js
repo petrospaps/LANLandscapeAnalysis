@@ -1,6 +1,39 @@
             //Note: I need jQuery!
 
             var apiKey = "231aa68de0dde8a67cb9d06a94649517";
+            var timespanInYears = 2;
+            var radius = 0.02;
+
+            // Retrieve the earliest date we want to retrieve pictures for
+            function getStartDate() {
+                var today = new Date();
+                
+                var year = today.getFullYear() - timespanInYears;
+                var month = today.getMonth();
+                var day = today.getDate();
+
+                var startDate = new Date(year, month, day);
+
+                return startDate;
+            }
+
+            // Retrieve the latest date we want to retrieve pictures for
+            function getEndDate() {
+                
+                return new Date();
+            }
+
+            // Convert a native Date type to a MySQL/ISO format date string
+            function dateToMySqlString(inputDate) {
+                
+                var year = inputDate.getFullYear();
+                var month = inputDate.getMonth();
+                var day = inputDate.getDate();
+
+                var dateAsString = year.toString() + "-" + ((month < 10) ? "0" : "") + month.toString() + "-" + ((day < 10) ? "0" : "") + day.toString();
+
+                return dateAsString;
+            }
 
             // Send an HTTP request to the specified URL and return the result
             function emitRequest(url) {
@@ -69,14 +102,17 @@
 
             // Retrieve the information for a location
             function getInformationForPoint(longitude, latitude) {
-                var radius = 0.02;
-                var startDate = "2017-01-01";
-                var endDate = "2017-07-01";
+                
+                var startDate = getStartDate();
+                var startDateString = dateToMySqlString(startDate);
+                
+                var endDate = getEndDate();
+                var endDateString = dateToMySqlString(endDate);
 
                 var results = [];
                 var promises = [];
 
-                return getImagesForLocation(longitude, latitude, radius, startDate, endDate)                    
+                return getImagesForLocation(longitude, latitude, radius, startDateString, endDateString)
                         .then(images => {
                                 images.forEach(image => {
                                     var photoId = image.id;
