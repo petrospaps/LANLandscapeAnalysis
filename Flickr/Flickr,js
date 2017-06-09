@@ -6,6 +6,7 @@
             var timespanInYears = 2;
             // Accuracy (in km) when retrieving images for a point
             var radius = 0.02;
+            var neighbouringRadius = 0.15;
             // Number of images per page to get
             var imagePageSize = 500;
 
