@@ -217,14 +217,32 @@
                 return area / imageCount;
             }
 
+            function sumOfFavourites(items) {
+                
+                return items.reduce( function(a, b) { return a + parseInt(b.favourites); }, 0);
+            }
+
             function computeScoreForPoint(longitude, latitude) {
-                // TODO: Compute Score
+
                 return getAllInformationForPoint(longitude, latitude)
                         .then(result => {                            
-                            var pointDensity = computeDensity(result.point.totalPhotos, radius);
-                            var areaDensity = computeDensity(result.area.totalPhotos, neighbouringRadius);
+                            var pointPhotoCount = result.point.totalPhotos;
+                            var pointFavourites = sumOfFavourites(result.point.photos);
 
-                            return { pointScore: pointDensity, areaScore: areaDensity }
+                            var areaPhotoCount = result.area.totalPhotos;
+                            var areaFavourites = sumOfFavourites(result.area.photos);
+                            
+                            var pointPhotoDensity = computeDensity(pointPhotoCount, radius);
+                            var pointFavouriteDensity = computeDensity(pointFavourites, radius);
+
+                            var areaPhotoDensity = computeDensity(areaPhotoCount, neighbouringRadius);                            
+                            var areaFavouriteDensity = computeDensity(areaFavourites, neighbouringRadius);
+
+                            var pointScore = { photoDensity: pointPhotoDensity, favouriteDensity: pointFavouriteDensity };
+                            var areaScore = { photoDensity: areaPhotoDensity, favouriteDensity: areaFavouriteDensity };
+
+                            return { pointScore: pointScore, areaScore: areaScore };
                         });
-            }            
+            }          
+            
             // Usage: computeScoreForPoint(-1.403664, 50.89967).then(result => console.log("output", result);
