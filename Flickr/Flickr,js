@@ -207,42 +207,45 @@
 
             /* Scoring */
 
+            // Compute the area of a circle
             function computeArea(radius) {
                 return Math.PI * ( Math.pow(radius, 2));
             }
 
-            function computeDensity(imageCount, radius) {
+            // Compute the density of items within a circle
+            function computeDensity(itemCount, radius) {
                 var area = computeArea(radius);
 
-                return area / imageCount;
+                return area / itemCount;
             }
 
+            // Compute the number of favouritings within an array of photos
             function sumOfFavourites(items) {
                 
                 return items.reduce( function(a, b) { return a + parseInt(b.favourites); }, 0);
             }
 
+            // Compute the score given a set of photos and a radius
+            function computeScore(photos, radius) {
+                var photoCount = photos.totalPhotos;
+                var favouriteCount = sumOfFavourites(photos.photos);
+
+                var photoDensity = computeDensity(photoCount, radius);
+                var favouriteDensity = computeDensity(favouriteCount, radius);
+
+                return { photoDensity: photoDensity, favouriteDensity: favouriteDensity };
+            }
+
+            // Compute the final score
             function computeScoreForPoint(longitude, latitude) {
 
                 return getAllInformationForPoint(longitude, latitude)
                         .then(result => {                            
-                            var pointPhotoCount = result.point.totalPhotos;
-                            var pointFavourites = sumOfFavourites(result.point.photos);
-
-                            var areaPhotoCount = result.area.totalPhotos;
-                            var areaFavourites = sumOfFavourites(result.area.photos);
                             
-                            var pointPhotoDensity = computeDensity(pointPhotoCount, radius);
-                            var pointFavouriteDensity = computeDensity(pointFavourites, radius);
-
-                            var areaPhotoDensity = computeDensity(areaPhotoCount, neighbouringRadius);                            
-                            var areaFavouriteDensity = computeDensity(areaFavourites, neighbouringRadius);
-
-                            var pointScore = { photoDensity: pointPhotoDensity, favouriteDensity: pointFavouriteDensity };
-                            var areaScore = { photoDensity: areaPhotoDensity, favouriteDensity: areaFavouriteDensity };
+                            var pointScore = computeScore(result.point, radius);
+                            var areaScore = computeScore(result.area, neighbouringRadius);
 
                             return { pointScore: pointScore, areaScore: areaScore };
                         });
-            }          
-            
+            }            
             // Usage: computeScoreForPoint(-1.403664, 50.89967).then(result => console.log("output", result);
