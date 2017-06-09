@@ -9,7 +9,7 @@
             // Number of images per page to get
             var imagePageSize = 500;
 
-            /* Helper Functions */
+                        /* Helper Functions */
 
             // Retrieve the earliest date we want to retrieve pictures for
             function getStartDate() {
@@ -121,7 +121,7 @@
                     var numberOfPhotos = result.photos.total;
                     var photos = result.photos.photo;
 
-                    return photos;
+                    return { totalImages: numberOfPhotos, photos: photos };
                 });                
             }
 
@@ -154,7 +154,7 @@
                      var numberOfPhotos = result.photos.total;
                      var photos = result.photos.photo;
 
-                     return photos;                    
+                    return { totalImages: numberOfPhotos, photos: photos };
                 });
             }            
 
@@ -173,8 +173,9 @@
                 var promises = [];
 
                 return getImageListForLocation(longitude, latitude, radius, startDateString, endDateString)                                                      
-                        .then(images => getStatsForImages(images))
-                        .then(results => results);
+                        .then(result => { photoCount = result.totalImages; return result.photos; })
+                        .then(result => getStatsForImages(result))                    
+                        .then(results => { return { photoCount: photoCount, photos: results } });
             }
 
             /* Neighbouring Area */
@@ -193,11 +194,14 @@
 
                 var placeId;
 
+                var photoCount;
+
                 return getPlaceIdForPoint(longitude, latitude)                        
                         .then(result => placeId = result)                        
-                        .then(() => getImageListForPlace(placeId, startDateString, endDateString))                                
-                        .then(images => getStatsForImages(images))
-                        .then(results => results);
+                        .then(() => getImageListForPlace(placeId, startDateString, endDateString))
+                        .then(result => { photoCount = result.totalImages; return result.photos; })
+                        .then(result => getStatsForImages(result))
+                        .then(results => { return { photoCount: photoCount, photos: results } });
             }
 
             /* Combined */
@@ -207,9 +211,9 @@
                 var areaStats;
 
                 return  getInformationForPoint(longitude, latitude)
-                        .then(result => pointStats = result)
+                        .then(result => pointStats = { totalPhotos: result.photoCount, photos: result.photos})
                         .then(() => getInformationForAreaSurroundingPoint(longitude, latitude))
-                        .then(result => areaStats = result)
+                        .then(result => areaStats = { totalPhotos: result.photoCount, photos: result.photos})
                         .then(() => { return { point: pointStats, area: areaStats }  });
             }
 
@@ -219,3 +223,5 @@
                 // TODO: Compute Score
                 return getAllInformationForPoint(longitude, latitude);
             }
+            
+            // Usage: computeScoreForPoint(-1.403664, 50.89967).then(result => console.log("output", result);
