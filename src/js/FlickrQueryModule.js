@@ -1,4 +1,291 @@
-(function () {
+var FlickrModule = (function () {
     "use strict";
+    
+    // API Key for Flickr
+            var apiKey = "You Need To Set This";
+            // Number of years to go back when retrieving images
+            var timespanInYears = 1;
+            // Accuracy (in km) when retrieving images for a point
+            var radius = 0.02;
+            var neighbouringRadius = 0.15;
+            // Number of images per page to get
+            var imagePageSize = 500;
+
+            /* Helper Functions */
+
+            // Retrieve the earliest date we want to retrieve pictures for
+            function getStartDate() {
+                var today = new Date();
+                
+                var year = today.getFullYear() - timespanInYears;
+                var month = today.getMonth();
+                var day = today.getDate();
+
+                var startDate = new Date(year, month, day);
+
+                return startDate;
+            }
+
+            // Retrieve the latest date we want to retrieve pictures for
+            function getEndDate() {
+                
+                return new Date();
+            }
+
+            // Convert a native Date type to a MySQL/ISO format date string
+            function dateToMySqlString(inputDate) {
+                
+                var year = inputDate.getFullYear();
+                var month = inputDate.getMonth();
+                var day = inputDate.getDate();
+
+                var dateAsString = year.toString() + "-" + ((month < 10) ? "0" : "") + month.toString() + "-" + ((day < 10) ? "0" : "") + day.toString();
+
+                return dateAsString;
+            }
+
+            // Send an HTTP request to the specified URL and return the result
+            function emitRequest(url) {
+                
+                url = url.replace("$apikey$", apiKey);               
+
+                return $.getJSON(url, function(data) { return(data); });
+            }
+
+            /* Shared Methods */
+
+            // Get the number of users "favouriting" a given image
+            function getFavouriteCountForImage(photoId) {
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getFavorites&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo.total);
+            }
+
+            // Get the general properties for an image
+            function getPropertiesForImage(photoId) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=$apikey$&photo_id=$photo$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$photo$", photoId);
+
+                return emitRequest(url).then(result => result.photo);
+            }
+
+            // Get the number of views an image has had
+            function getViewsForImage(photoId) {
+                
+                return getPropertiesForImage(photoId).then(result => result.views);
+            }
+
+            // Get the stats for a set of images
+            function getStatsForImages(images) {
+                var results = []; 
+                var promises = [];
+
+                images.forEach(image => {
+                                    var photoId = image.id;
+
+                                    var promise = getStatsForImage(photoId).then(result => results.push(result) );
+                                    promises.push(promise);
+                                })
+                
+                return Promise.all(promises).then(() => results);
+            }
+
+            // Get the summary statistics for an image
+            function getStatsForImage(photoId) {
+                
+                var favourites;
+                var views;
+
+                return getFavouriteCountForImage(photoId)
+                    .then(result => { favourites = result; })
+                    .then(() => getViewsForImage(photoId))
+                    .then(result => { views = result; })
+                    .then(() => { 
+                        var stats = { photoId: photoId, views: views, favourites: favourites };
+                        
+                        return stats;
+                    });
+            }
+
+            /* Location Methods */
+            function getImageListPageForLocation(longitude, latitude, radius, startDate, endDate, pageNumber) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=$pageSize$&page=$page$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate).replace("$pageSize$", imagePageSize).replace("$page$", pageNumber);
+
+                return emitRequest(url);
+            }
+
+            // Retrieve the set of images for the location
+            function getImageListForLocation(longitude, latitude, radius, startDate, endDate) {
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=$pageSize$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate).replace("$pageSize$", imagePageSize);
+
+                return emitRequest(url)
+                        .then(result => result.photos)
+                        .then(result => {
+                            var numberOfPhotos = result.total;
+                            var photos = result.photo;
+
+                            var intermediaryResults = [];
+                            var promises = [];
+
+                            var pageCount = result.pages;
+
+                            if (pageCount > 1) {
+                                var currentPage = 2;
+
+                                while (currentPage <= pageCount) {
+                                    
+                                    var promise = getImageListPageForLocation(longitude, latitude, radius, startDate, endDate, currentPage)
+                                                    .then(result => intermediaryResults.push(result.photos.photo));
+                                    
+                                    promises.push(promise);
+
+                                    currentPage++;
+                                }
+                            }
+
+                            if (promises.length > 0) {
+                                return Promise.all(promises).then(() => {                                            
+                                            intermediaryResults.forEach(result => result.forEach(item => photos.push(item)));
+                                        })
+                                        .then(() => { return { totalImages: numberOfPhotos, photos: photos } });
+                            }
+                            else {
+                                return { totalImages: numberOfPhotos, photos: photos }
+                            }
+                        });                                 
+            }
+
+            // Get the statistics for a point and radius
+            function getDataForPoint(longitude, latitude, radius) {
+                var startDate = getStartDate();
+                var startDateString = dateToMySqlString(startDate);
+                
+                var endDate = getEndDate();
+                var endDateString = dateToMySqlString(endDate);
+
+                var results = [];
+                var promises = [];
+
+                return getImageListForLocation(longitude, latitude, radius, startDateString, endDateString)                                                      
+                        .then(result => { photoCount = result.totalImages; return result.photos; })
+                        .then(result => getStatsForImages(result))                    
+                        .then(results => { return { photoCount: photoCount, photos: results } });
+            }
+
+
+            /* Places Methods - Not used due to being a bit "black box", but might be useful in the future */
+
+            // Get the Flickr Place for a point
+            function getPlaceDetailsForPoint(longitude, latitude) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.places.findByLatLon&api_key=$apikey$&lat=$lat$&lon=$lon$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude);
+
+                return emitRequest(url).then(result => result.places.place[0]);
+            }
+
+            // Get the Flickr Place Id for a point
+            function getPlaceIdForPoint(longitude, latitude) {
+                
+                return getPlaceDetailsForPoint(longitude, latitude).then(result => result.place_id);
+            }
+
+            // Retrieve the set of images for the location
+            function getImageListForPlace(placeId, startDate, endDate) {
+
+                // TODO: Cope with multiple pages of data
+
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$startDate$&max_taken_date=$endDate$&content_type=1&place_id=$placeId$&per_page=$pageSize$&format=json&nojsoncallback=1"
+                var url = urlTemplate.replace("$startDate$", startDate).replace("$endDate$", endDate).replace("$pageSize$", imagePageSize).replace("$placeId$", placeId);
+
+                return emitRequest(url).then(result => {
+                     var numberOfPhotos = result.photos.total;
+                     var photos = result.photos.photo;
+
+                    return { totalImages: numberOfPhotos, photos: photos };
+                });
+            }            
+
+            /* Local Point */
+
+            // Retrieve the information for a location
+            function getInformationForPoint(longitude, latitude) {
+                
+                return getDataForPoint(longitude, latitude, radius);
+            }
+
+            /* Neighbouring Area */
+
+            // Retrieve the information for the surrounding area
+            function getInformationForAreaSurroundingPoint(longitude, latitude) {
+                
+                return getDataForPoint(longitude, latitude, neighbouringRadius);
+            }
+
+            /* Combined */
+
+            function getAllInformationForPoint(longitude, latitude) {
+                var pointStats;
+                var areaStats;
+
+                return  getInformationForPoint(longitude, latitude)
+                        .then(result => pointStats = { totalPhotos: result.photoCount, photos: result.photos})
+                        .then(() => getInformationForAreaSurroundingPoint(longitude, latitude))
+                        .then(result => areaStats = { totalPhotos: result.photoCount, photos: result.photos})
+                        .then(() => { return { point: pointStats, area: areaStats }  });
+            }
+
+            /* Scoring */
+
+            // Compute the area of a circle
+            function computeArea(radius) {
+                return Math.PI * ( Math.pow(radius, 2));
+            }
+
+            // Compute the density of items within a circle
+            function computeDensity(itemCount, radius) {
+                var area = computeArea(radius);
+
+                return area / itemCount;
+            }
+
+            // Compute the number of favouritings within an array of photos
+            function sumOfFavourites(items) {
+                
+                return items.reduce( function(a, b) { return a + parseInt(b.favourites); }, 0);
+            }
+
+            // Compute the score given a set of photos and a radius
+            function computeScore(photos, radius) {
+                var photoCount = photos.totalPhotos;
+                var favouriteCount = sumOfFavourites(photos.photos);
+
+                var photoDensity = computeDensity(photoCount, radius);
+                var favouriteDensity = computeDensity(favouriteCount, radius);
+
+                return { photoDensity: photoDensity, favouriteDensity: favouriteDensity };
+            }
+
+            // Compute the final score
+            function computeScoreForPoint(longitude, latitude) {
+
+                return getAllInformationForPoint(longitude, latitude)
+                        .then(result => {                            
+                            
+                            var pointScore = computeScore(result.point, radius);
+                            var areaScore = computeScore(result.area, neighbouringRadius);
+
+                            return { pointScore: pointScore, areaScore: areaScore };
+                        });
+            }
+    
+    return {computeScoreForPoint: computeScoreForPoint};
 
 }());
