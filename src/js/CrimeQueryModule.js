@@ -1,4 +1,4 @@
-(function ($) {
+var crimeModule = (function ($) {
     "use strict";
 
     $(document).ready(function () {
@@ -88,16 +88,36 @@
 
 
     //Crime data
-    function streetLevelCrimes() {
-
+    function streetLevelCrimes(lat, lon) {
+        var response;
+        $.ajax({
+            url: "https://data.police.uk/api/crimes-street/all-crime?lat=" + lat + "&lng=" + lon + "",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+                //response = data;
+            }
+        })
+        return response;
     }
 
     function streetLevelOutcomes() {
 
     }
 
-    function crimesAtLocation() {
-
+    function crimesAtLocation(lat, lon) {
+        // Data police example
+        //https: //data.police.uk/api/crimes-at-location?date=2012-02&lat=52.629729&lng=-1.131592
+        var response;
+        $.ajax({
+            url: "https://data.police.uk/api/crimes-at-location?lat=" + lat + "&lng=" + lon + "",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+                //response = data;
+            }
+        })
+        return response;
     }
 
     function crimesNoLocation() {
@@ -116,9 +136,6 @@
 
     }
 
-
-
-
     //Neighbourhood data
     function locateNeighbourhood(lat, lon) {
         var response;
@@ -133,9 +150,14 @@
         return response;
     }
 
-
     function latlongConvert() {
         //postcodes.io
     }
+
+    return {
+        crimesAtLocation: crimesAtLocation,
+        locateNeighbourhood: locateNeighbourhood,
+        streetLevelCrimes: streetLevelCrimes
+    };
 
 }(jQuery));

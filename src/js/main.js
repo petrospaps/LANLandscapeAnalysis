@@ -75,6 +75,8 @@ var module = (function () {
             }
             var result = "this is the text to display"
             showResults(result);
+            crimeModule.crimesAtLocation(50.89967, -1.403664);
+            crimeModule.streetLevelCrimes(50.89967, -1.403664);
 
         } else {
             console.log("Please upload a JSON file and parse the locations");
@@ -106,5 +108,9 @@ var module = (function () {
 
     // if you want to make a function available from html
     //window.myfunction = myfunction;
+
+    // if you want to call a function public
+    // set a global var and assign the self invoking function e.g. globalvariable.myfunction() to call the function
+    //return {myfunction: myfunction};
 
 }());
