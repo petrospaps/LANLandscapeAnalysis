@@ -207,9 +207,24 @@
 
             /* Scoring */
 
+            function computeArea(radius) {
+                return Math.PI * ( Math.pow(radius, 2));
+            }
+
+            function computeDensity(imageCount, radius) {
+                var area = computeArea(radius);
+
+                return area / imageCount;
+            }
+
             function computeScoreForPoint(longitude, latitude) {
                 // TODO: Compute Score
-                return getAllInformationForPoint(longitude, latitude);
-            }
-            
+                return getAllInformationForPoint(longitude, latitude)
+                        .then(result => {                            
+                            var pointDensity = computeDensity(result.point.totalPhotos, radius);
+                            var areaDensity = computeDensity(result.area.totalPhotos, neighbouringRadius);
+
+                            return { pointScore: pointDensity, areaScore: areaDensity }
+                        });
+            }            
             // Usage: computeScoreForPoint(-1.403664, 50.89967).then(result => console.log("output", result);
