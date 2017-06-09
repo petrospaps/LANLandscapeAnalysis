@@ -95,7 +95,8 @@ var crimeModule = (function ($) {
             dataType: "json",
             success: function (data) {
                 console.log(data)
-                //response = data;
+                response = data;
+                mainModule.getAllCrimeData(0, response);
             }
         })
         return response;
@@ -114,7 +115,8 @@ var crimeModule = (function ($) {
             dataType: "json",
             success: function (data) {
                 console.log(data)
-                //response = data;
+                response = data;
+                mainModule.getAllCrimeData(response, 0);
             }
         })
         return response;
@@ -144,14 +146,15 @@ var crimeModule = (function ($) {
             dataType: "json",
             success: function (data) {
                 console.log(data)
-                //response = data;
+                response = data;
             }
         })
         return response;
     }
 
+    // Convert a lat long to a post code
     function latlongConvert() {
-        //postcodes.io
+
     }
 
     return {
