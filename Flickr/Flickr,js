@@ -3,7 +3,7 @@
             // API Key for Flickr
             var apiKey = "You Need To Set This";
             // Number of years to go back when retrieving images
-            var timespanInYears = 2;
+            var timespanInYears = 1;
             // Accuracy (in km) when retrieving images for a point
             var radius = 0.02;
             var neighbouringRadius = 0.15;
@@ -110,20 +110,55 @@
             }
 
             /* Location Methods */
+            function getImageListPageForLocation(longitude, latitude, radius, startDate, endDate, pageNumber) {
+                
+                var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=$pageSize$&page=$page$&format=json&nojsoncallback=1";
+                var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate).replace("$pageSize$", imagePageSize).replace("$page$", pageNumber);
+
+                return emitRequest(url);
+            }
 
             // Retrieve the set of images for the location
             function getImageListForLocation(longitude, latitude, radius, startDate, endDate) {
-                // TODO: Cope with multiple pages of data
 
                 var urlTemplate = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=$apikey$&min_taken_date=$minDate$&max_taken_date=$maxDate$&content_type=1&lat=$lat$&lon=$lon$&radius=$radius$&radius_units=km&per_page=$pageSize$&format=json&nojsoncallback=1";
                 var url = urlTemplate.replace("$lat$", latitude).replace("$lon$", longitude).replace("$radius$", radius).replace("$minDate$", startDate).replace("$maxDate$", endDate).replace("$pageSize$", imagePageSize);
-                
-                return emitRequest(url).then(result => {
-                    var numberOfPhotos = result.photos.total;
-                    var photos = result.photos.photo;
 
-                    return { totalImages: numberOfPhotos, photos: photos };
-                });                
+                return emitRequest(url)
+                        .then(result => result.photos)
+                        .then(result => {
+                            var numberOfPhotos = result.total;
+                            var photos = result.photo;
+
+                            var intermediaryResults = [];
+                            var promises = [];
+
+                            var pageCount = result.pages;
+
+                            if (pageCount > 1) {
+                                var currentPage = 2;
+
+                                while (currentPage <= pageCount) {
+                                    
+                                    var promise = getImageListPageForLocation(longitude, latitude, radius, startDate, endDate, currentPage)
+                                                    .then(result => intermediaryResults.push(result.photos.photo));
+                                    
+                                    promises.push(promise);
+
+                                    currentPage++;
+                                }
+                            }
+
+                            if (promises.length > 0) {
+                                return Promise.all(promises).then(() => {                                            
+                                            intermediaryResults.forEach(result => result.forEach(item => photos.push(item)));
+                                        })
+                                        .then(() => { return { totalImages: numberOfPhotos, photos: photos } });
+                            }
+                            else {
+                                return { totalImages: numberOfPhotos, photos: photos }
+                            }
+                        });                                 
             }
 
             // Get the statistics for a point and radius
@@ -248,5 +283,6 @@
 
                             return { pointScore: pointScore, areaScore: areaScore };
                         });
-            }            
-            // Usage: computeScoreForPoint(-1.403664, 50.89967).then(result => console.log("output", result);
+            }
+
+// Usage: computeScoreForPoint(-1.403664, 50.89967).then(result => console.log("output", result);
