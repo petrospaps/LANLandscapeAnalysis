@@ -15,8 +15,7 @@ var mainModule = (function () {
     window.onload = function () {
         checkFileAPISupport();
 
-        console.log(math.derivative('2x^2 + 3x + 4', 'x').toString());
-
+        // Testing that SPARQL is working OK
         poiModule.getSPOIData();
         poiModule.getLGDData();
 
@@ -113,46 +112,53 @@ var mainModule = (function () {
     }
 
     function calculateCrimeScore(areaCrimeP, locationCrimeP) {
-        var outcome = 0;
 
+        var rank = 0;
         var numOfLocations = locationCrimeP.length;
         var numOfLocationsArea = areaCrimeP.length;
-        var listOfIdArea = [];
         var listOfIdAreaUnique = [];
-        var num_listOfIdAreaUnique = 0;
         var temp_var1 = null;
-        var temp_var2 = null;
 
-        // The array of unique ids is empty, so the first element will be unique and we add it below
-        listOfIdAreaUnique.push(areaCrimeP[0].location.street.id);
 
+        // Find how many insidents per unique location
         for (var i = 0; i < numOfLocationsArea; i++) {
-            console.log("loop for : " + numOfLocationsArea + " current loop: " + i);
-            num_listOfIdAreaUnique = listOfIdAreaUnique.length;
-            for (var j = 0; j < num_listOfIdAreaUnique; j++) {
-                console.log("loop for : " + num_listOfIdAreaUnique + " current loop: " + j);
-                temp_var1 = areaCrimeP[i].location.street.id;
-                temp_var2 = listOfIdAreaUnique[j];
+            temp_var1 = areaCrimeP[i].location.street.id;
 
-                if (temp_var2 !== temp_var1) {
-                    if (num_listOfIdAreaUnique -1 === j) {
-                        listOfIdAreaUnique.push(areaCrimeP[i].location.street.id);
-                        console.log("Added to the unique list " + areaCrimeP[j].location.street.id);
-                    }
-                } else {
-                    console.log("Already in the list");
-                    break;
-                }
+            if (!listOfIdAreaUnique[temp_var1]) {
+                listOfIdAreaUnique[areaCrimeP[i].location.street.id] = 1;
+            } else {
+                listOfIdAreaUnique[areaCrimeP[i].location.street.id] += 1;
             }
         }
 
         console.log(listOfIdAreaUnique);
 
-        // Find how many unique streets in the area
-        // Find the mean of the area
+        var sum_of_unique_area = 0;
+        var mean_of_unique_area = 0;
+        var count_unique_id = 0;
+        var standard_deviation = 0;
+        var z_score = 0;
+
+        // Find the mean of the locations in the area
+        for (var uniqueId in listOfIdAreaUnique) {
+            count_unique_id++;
+            sum_of_unique_area += listOfIdAreaUnique[uniqueId];
+            mean_of_unique_area = sum_of_unique_area / count_unique_id;
+        }
+
         // Calculate the Standard deviation
+        standard_deviation = Math.sqrt((mean_of_unique_area - listOfIdAreaUnique[locationCrimeP[0].location.street.id]) / count_unique_id);
+
         // calculate the z score
+        z_score = (listOfIdAreaUnique[locationCrimeP[0].location.street.id] - mean_of_unique_area) / standard_deviation;
+
         // transform the z score to a rank
+        // Still TODO
+
+        console.log("Mean: " + mean_of_unique_area);
+        console.log("Standard Deviation: " + standard_deviation);
+        console.log("z score: " + z_score);
+
     }
 
     function getAllCrimeData(data1, data2) {
