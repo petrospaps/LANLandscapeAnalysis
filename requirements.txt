@@ -2,7 +2,7 @@ certifi==2017.4.17
 chardet==3.0.3
 cookies==2.2.1
 idna==2.5
-numpy==1.13.0
+numpy==1.21.0
 police-api-client==1.2.2
 requests==2.17.3
 responses==0.5.1
